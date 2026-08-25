@@ -1,4 +1,4 @@
-# angola-empresas/scraper
+# anilpedro07/scraper_vagas
 
 Motor de **web scraping** para sites de empresas em Angola, escrito em PHP.
 
@@ -13,7 +13,7 @@ facilitando a extracao de directorios e guias de empresas angolanas.
 ## Instalacao
 
 ```bash
-composer require angola-empresas/scraper
+composer require anilpedro07/scraper_vagas
 ```
 
 Para usar a estrategia pesada (sites com JavaScript):

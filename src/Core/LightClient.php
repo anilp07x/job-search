@@ -24,7 +24,7 @@ final class LightClient implements ClientInterface
             'timeout' => 20,
             'connect_timeout' => 10,
             'headers' => [
-                'User-Agent' => 'angola-empresas-scraper/0.1 (+https://github.com/angola-empresas/scraper)',
+                'User-Agent' => 'anilpedro07/scraper_vagas/0.1 (+https://github.com/anilp07x/job-search)',
                 'Accept-Language' => 'pt-PT,pt;q=0.9',
             ],
             'verify' => false,

@@ -1,14 +1,14 @@
 {
-    "name": "angola-empresas/scraper",
+    "name": "anilp07x/scraper_vagas",
     "description": "Motor de web scraping com estratégia leve (Guzzle + DomCrawler) ou pesada (Panther/Chrome headless) e adaptadores para sites de empresas em Angola.",
     "type": "library",
     "keywords": ["scraper", "web-scraping", "angola", "empresas", "crawler", "guzzle", "panther"],
-    "homepage": "https://github.com/angola-empresas/scraper",
+    "homepage": "https://github.com/anilp07x/job-search",
     "license": "MIT",
     "authors": [
         {
-            "name": "angola-empresas",
-            "email": "contato@angola-empresas.dev"
+            "name": "anilp07x",
+            "email": "anilp07x@users.noreply.github.com"
         }
     ],
     "require": {
