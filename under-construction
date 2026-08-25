@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace AngolaEmpresas\Scraper\Adapters;
+
+/**
+ * jobartis.com (portal de emprego africano, com renderizacao JavaScript).
+ * Usa estrategia 'heavy' (Panther/Chrome) por padrao.
+ */
+final class JobartisAdapter extends JobBoardAdapter
+{
+    public function __construct(string $url = 'https://www.jobartis.com/pt/empregos-angola', string $strategy = 'heavy')
+    {
+        parent::__construct($url, $strategy, [
+            'list' => '.job-card, .offer-card, article',
+            'title' => '.job-title, .offer-title',
+            'company' => '.job-company, .offer-company',
+            'location' => '.job-location, .offer-location',
+            'url' => 'a',
+        ], ['pagination' => true, 'next' => 'a[rel="next"]', 'source' => 'jobartis.com']);
+    }
+}

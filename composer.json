@@ -1,0 +1,47 @@
+{
+    "name": "angola-empresas/scraper",
+    "description": "Motor de web scraping com estratégia leve (Guzzle + DomCrawler) ou pesada (Panther/Chrome headless) e adaptadores para sites de empresas em Angola.",
+    "type": "library",
+    "keywords": ["scraper", "web-scraping", "angola", "empresas", "crawler", "guzzle", "panther"],
+    "homepage": "https://github.com/angola-empresas/scraper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "angola-empresas",
+            "email": "contato@angola-empresas.dev"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.0",
+        "symfony/dom-crawler": "^6.4 || ^7.0",
+        "symfony/css-selector": "^6.4 || ^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0 || ^11.0"
+    },
+    "suggest": {
+        "symfony/panther": "Necessario apenas para a estrategia pesada (sites com JavaScript/Ajax)."
+    },
+    "autoload": {
+        "psr-4": {
+            "AngolaEmpresas\\Scraper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AngolaEmpresas\\Scraper\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {}
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
