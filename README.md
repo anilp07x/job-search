@@ -1,28 +1,50 @@
-# anilpedro07/scraper_vagas
+# scraper_vagas
 
-Motor de **web scraping** para sites de empresas em Angola, escrito em PHP.
+> Motor de **web scraping** em PHP para portais de emprego e empresas em Angola — com estratégia automática **leve** (HTTP estático) ou **pesada** (Chrome headless) e adaptadores prontos a usar.
 
-Escolhe automaticamente a melhor estrategia por site:
+[![Packagist](https://img.shields.io/badge/Packagist-anilpedro07%2Fscraper_vagas-2196F3?logo=packagist)](https://packagist.org/packages/anilpedro07/scraper_vagas)
+[![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Symfony](https://img.shields.io/badge/Symfony-DomCrawler%20%2F%20CssSelector-000000?logo=symfony&logoColor=white)](https://symfony.com/)
+[![Guzzle](https://img.shields.io/badge/Guzzle-HTTP%20Client-FF6F61)](https://docs.guzzlephp.org/)
+[![Panther](https://img.shields.io/badge/Panther-Chrome%20Headless-000000)](https://github.com/symfony/panther)
+[![Tests](https://img.shields.io/badge/tests-6%20passing-brightgreen)](https://github.com/anilp07x/job-search)
 
-- **Leve (`light`)** — `Guzzle` + `Symfony DomCrawler`. Para sites estaticos/HTML.
-- **Pesada (`heavy`)** — `Symfony Panther` (Chrome headless) para sites com JavaScript/Ajax.
+## Tecnologias
 
-Inclui um modelo de dados flexivel (`Company`) e adaptadores configuraveis,
-facilitando a extracao de directorios e guias de empresas angolanas.
+<p align="left">
+  <a href="https://www.php.net/"><img src="https://cdn.simpleicons.org/php/777BB4" alt="PHP" height="38"></a>
+  <a href="https://getcomposer.org/"><img src="https://cdn.simpleicons.org/composer/885630" alt="Composer" height="38"></a>
+  <a href="https://symfony.com/"><img src="https://cdn.simpleicons.org/symfony/000000" alt="Symfony" height="38"></a>
+  <a href="https://docs.guzzlephp.org/"><img src="https://cdn.simpleicons.org/guzzle/ff6f61" alt="Guzzle" height="38"></a>
+  <a href="https://github.com/symfony/panther"><img src="https://cdn.simpleicons.org/selenium/43B02A" alt="Panther / Chrome" height="38"></a>
+  <a href="https://laravel.com/"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" height="38"></a>
+</p>
 
-## Instalacao
+## Funcionalidades
+
+- **Estratégia automática** — o `StrategyResolver` escolhe entre cliente leve (Guzzle + Symfony DomCrawler) ou pesado (Symfony Panther / Chrome headless) conforme o adapter.
+- **Adaptadores verificados** para os principais portais de emprego angolanos (ver tabela abaixo).
+- **Modelos de dados flexíveis** — `Company` e `Job` com campos comuns + array `extra` para metadados específicos.
+- **Autenticação** — suporte a cookies/headers de sessão para portais que exigem login.
+- **Paginação** — seguimento automático de "próxima página" quando o adapter o indica.
+- **Demo Bootstrap** — página de exemplo que corre os adapters e apresenta os resultados numa tabela.
+
+## Instalação
 
 ```bash
 composer require anilpedro07/scraper_vagas
 ```
 
-Para usar a estrategia pesada (sites com JavaScript):
+Para usar a estratégia pesada (sites com JavaScript/Ajax):
 
 ```bash
 composer require --dev symfony/panther
 ```
 
-## Uso basico
+## Início rápido
+
+### Empresas (adapter genérico/configurável)
 
 ```php
 use AngolaEmpresas\Scraper\Scraper;
@@ -40,7 +62,7 @@ $adapter = new GenericAdapter(
         'address' => '.address',
         'province'=> '.province',
         'sector'  => '.sector',
-        'nif'     => '.nif',     // campo extra assume 'extra'
+        'nif'     => '.nif',     // campo extra vai para 'extra'
     ],
     ['source' => 'exemplo.co.ao'],
 );
@@ -54,28 +76,7 @@ foreach ($companies as $company) {
 }
 ```
 
-## Adapter de exemplo (Guia de Empresas)
-
-```php
-use AngolaEmpresas\Scraper\Adapters\GuiaEmpresasAdapter;
-
-$adapter = new GuiaEmpresasAdapter('https://www.guiaempresas.co.ao/', 'light');
-$companies = (new Scraper())->scrape($adapter);
-```
-
-> Os seletores do `GuiaEmpresasAdapter` sao ilustrativos. Ajuste-os ou crie o
-> seu proprio adapter copiando `src/Adapters/AbstractAdapter.php`.
-
-## Scraping de portais de emprego
-
-Alem de empresas, o pacote inclui adapters para os portais de vagas em
-Angola **verificados** (devolvem dados reais na pratica):
-
-| Adapter | Site | Estrategia | Auth |
-| --- | --- | --- | --- |
-| `AngoEmpregoAdapter` | angoemprego.com (WP Job Manager) | light | nao |
-| `AoEmpregosYoYotaAdapter` | ao.empregosyoyota.net/empregos | light | nao |
-| `JobartisAdapter` | jobartis.com/vagas-emprego | light | cookie `_jobartis_session_1` |
+### Vagas de emprego (adapter verificado)
 
 ```php
 use AngolaEmpresas\Scraper\Scraper;
@@ -87,28 +88,33 @@ foreach ($jobs as $job) {
 }
 ```
 
-### Pagina de demonstracao (Bootstrap)
+## Adaptadores verificados
 
-`demo/index.php` e uma pagina com Bootstrap que corre todos os adapters e
-mostra os resultados numa tabela. Suporta modo **fixture** (offline, com
-HTML de exemplo em `demo/fixtures/`) e modo **live** (scraping real, apenas
-adapters `light`).
+Estes adapters foram testados e devolvem **dados reais**:
 
-```bash
-php -S 127.0.0.1:8123 -t demo
-# abrir http://127.0.0.1:8123/?mode=fixture  (offline)
-# abrir http://127.0.0.1:8123/?mode=live     (ao vivo, light)
+| Adapter | Site | Estratégia | Autenticação |
+| --- | --- | --- | --- |
+| `AngoEmpregoAdapter` | angoemprego.com (WP Job Manager) | `light` | não |
+| `AoEmpregosYoYotaAdapter` | ao.empregosyoyota.net/empregos | `light` | não |
+| `JobartisAdapter` | jobartis.com/vagas-emprego | `light` | cookie `_jobartis_session_1` |
+
+Para o `JobartisAdapter` com sessão:
+
+```php
+use AngolaEmpresas\Scraper\Adapters\JobartisAdapter;
+
+$adapter = new JobartisAdapter(cookies: [
+    '_jobartis_session_1' => 'VALOR_DO_COOKIE_COPIADO_DO_BROWSER',
+]);
 ```
 
 ## Portais que exigem login
 
-Muitos portais so mostram as vagas depois de autenticacao. Ha duas abordagens:
+Muitos portais só mostram as vagas após autenticação. Duas abordagens:
 
-### 1) HTML estatico atras de sessao (estrategia `light`)
+### 1) HTML estático atrás de sessão (estratégia `light`)
 
-Abra o portal no browser, faca login e copie os **cookies de sessao**
-(DevTools → Application → Cookies, ex.: `sessionid`, `PHPSESSID`, `token`).
-Devolva-os no `getAuth()` do seu adapter; o `LightClient` envia-os no pedido.
+Copie os **cookies de sessão** (DevTools → Application → Cookies, ex.: `sessionid`, `PHPSESSID`) e devolva-os em `getAuth()`; o `LightClient` envia-os no pedido.
 
 ```php
 use AngolaEmpresas\Scraper\Adapters\AbstractJobAdapter;
@@ -122,12 +128,8 @@ final class PortalAuthAdapter extends AbstractJobAdapter
     public function getAuth(): array
     {
         return [
-            'cookies' => [
-                'sessionid' => 'COOKIE_COPIADO_DO_BROWSER',
-                'csrftoken' => 'OUTRO_COOKIE',
-            ],
-            // ou, alternativamente, um header de Authorization:
-            // 'headers' => ['Authorization' => 'Bearer SEU_TOKEN'],
+            'cookies' => ['sessionid' => 'COOKIE_COPIADO_DO_BROWSER'],
+            // ou: 'headers' => ['Authorization' => 'Bearer SEU_TOKEN'],
         ];
     }
 
@@ -144,28 +146,22 @@ final class PortalAuthAdapter extends AbstractJobAdapter
 $jobs = (new \AngolaEmpresas\Scraper\Scraper())->scrapeOnce(new PortalAuthAdapter());
 ```
 
-### 2) Portal com JavaScript / login interativo (estrategia `heavy`)
-
-Para sites que renderizam com JS ou exigem preencher o formulario de login,
-use `composer require --dev symfony/panther` e implemente o login com o
-browser headless antes de extrair. Exemplo de fluxo:
+### 2) Portal com JavaScript / login interativo (estratégia `heavy`)
 
 ```php
-use AngolaEmpresas\Scraper\Core\HeavyClient;
 use Symfony\Component\Panther\Client;
 
 $client = Client::createChromeClient();
 $client->get('https://portal.co.ao/login');
-$client->submitForm('Entrar', ['username' => '...', 'password' => '...']); //_passos reais do site_
+$client->submitForm('Entrar', ['username' => '...', 'password' => '...']);
 $client->get('https://portal.co.ao/vagas');
 $html = $client->getPageSource();
-// passe $html ao seu adapter->parse($html)
+// passe $html ao adapter->parse($html)
 ```
 
-> O LinkedIn bloqueia scraping e proibe nos ToS; use a API oficial. Para
-> qualquer portal, respeite `robots.txt` e os Termos de Servico.
+> O LinkedIn bloqueia scraping e proíbe nos ToS — use a API oficial. Para qualquer portal, respeite `robots.txt` e os Termos de Serviço.
 
-## Criar o seu proprio adapter
+## Criar o seu próprio adapter
 
 ```php
 use AngolaEmpresas\Scraper\Adapters\AbstractAdapter;
@@ -187,16 +183,20 @@ final class MeuSiteAdapter extends AbstractAdapter
 }
 ```
 
-## Modelo de dados (`Company`)
+## Demonstração (Bootstrap)
 
-Campos comuns: `name`, `phone`, `email`, `website`, `address`, `province`,
-`municipality`, `sector`, `nif`, `source`. Qualquer outro campo vai para `extra`.
+`demo/index.php` é uma página com Bootstrap que corre os adapters e apresenta os resultados numa tabela, com botão **"Ver mais"** por vaga (abre o site de destino). Suporta:
 
-## Boas praticas
+- `?mode=live` — scraping real (adapters `light`, com cookie para o Jobartis)
+- `?mode=fixture` — offline, com HTML de exemplo em `demo/fixtures/`
 
-- Respeite `robots.txt` e os Termos de Servico de cada site.
-- Adicione pausas (`sleep`) entre pedidos para nao sobrecarregar os servidores.
-- Nao utilize os dados extraidos para spam ou violacao de privacidade.
+```bash
+php -S 127.0.0.1:8123 -t demo
+# http://127.0.0.1:8123/            (ao vivo)
+# http://127.0.0.1:8123/?mode=fixture
+```
+
+> A pasta `demo/` não é versionada (está no `.gitignore`).
 
 ## Testes
 
@@ -205,6 +205,17 @@ composer install
 composer test
 ```
 
-## Licenca
+## Roadmap
 
-MIT
+- [ ] Exemplo de integração **Laravel** (`examples/laravel-demo`): ServiceProvider, Artisan command, Eloquent model, agendamento e filas.
+- [ ] Mais adaptadores verificados de portais angolanos.
+
+## Boas práticas
+
+- Respeite `robots.txt` e os Termos de Serviço de cada site.
+- Adicione pausas (`sleep`) entre pedidos para não sobrecarregar os servidores.
+- Não utilize os dados extraídos para spam ou violação de privacidade.
+
+## Licença
+
+[MIT](LICENSE) © anilpedro07
